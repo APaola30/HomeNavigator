@@ -1,0 +1,8 @@
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class retrofit2.** { *; }
+-keep class com.google.gson.** { *; }
+-keep class com.homenavigator.data.model.** { *; }
+-keep class dagger.hilt.** { *; }
+-keep class javax.inject.** { *; }
+-keep class com.google.android.gms.maps.** { *; }

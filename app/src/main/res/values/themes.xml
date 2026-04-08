@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.HomeNavigator" parent="Theme.Material3.DayNight.NoActionBar"> </style>
+    <style name="Theme.HomeNavigator.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#0A1628</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_home_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.HomeNavigator</item>
+    </style>
+</resources>
