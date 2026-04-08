@@ -2,13 +2,13 @@ package com.homenavigator.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import com.homenavigator.data.model.HomeAddress
 import com.homenavigator.data.repository.HomeAddressRepository
 import com.homenavigator.data.repository.LocationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.osmdroid.util.GeoPoint
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +31,7 @@ class SettingsViewModel @Inject constructor(
 
     sealed class GeoResult {
         data object Idle : GeoResult()
-        data class Found(val latLng: LatLng, val displayName: String) : GeoResult()
+        data class Found(val geoPoint: GeoPoint, val displayName: String) : GeoResult()
         data class Error(val msg: String) : GeoResult()
     }
 
@@ -40,17 +40,17 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             _loading.value = true; _geoResult.value = GeoResult.Idle
             locationRepo.geocodeAddress(query)
-                .onSuccess { (ll, name) -> _geoResult.value = GeoResult.Found(ll, name) }
+                .onSuccess { (gp, name) -> _geoResult.value = GeoResult.Found(gp, name) }
                 .onFailure { _geoResult.value = GeoResult.Error(it.message ?: "No encontrado") }
             _loading.value = false
         }
     }
 
-    fun saveHomeFromMap(latLng: LatLng) {
+    fun saveHomeFromMap(geoPoint: GeoPoint) {
         viewModelScope.launch {
             _loading.value = true
-            val name = locationRepo.reverseGeocode(latLng)
-            homeRepo.saveHomeAddress(HomeAddress(name, latLng.latitude, latLng.longitude, true))
+            val name = locationRepo.reverseGeocode(geoPoint)
+            homeRepo.saveHomeAddress(HomeAddress(name, geoPoint.latitude, geoPoint.longitude, true))
             _message.value = "¡Casa guardada!"
             _loading.value = false
         }
@@ -59,7 +59,7 @@ class SettingsViewModel @Inject constructor(
     fun confirmSaveGeocodeResult() {
         val r = _geoResult.value as? GeoResult.Found ?: return
         viewModelScope.launch {
-            homeRepo.saveHomeAddress(HomeAddress(r.displayName, r.latLng.latitude, r.latLng.longitude, true))
+            homeRepo.saveHomeAddress(HomeAddress(r.displayName, r.geoPoint.latitude, r.geoPoint.longitude, true))
             _message.value = "¡Casa guardada!"; _geoResult.value = GeoResult.Idle
         }
     }

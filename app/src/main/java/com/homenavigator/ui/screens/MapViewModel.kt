@@ -7,6 +7,7 @@ import com.homenavigator.data.repository.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.osmdroid.util.GeoPoint
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,11 +44,11 @@ class MapViewModel @Inject constructor(
     fun navigateHome() {
         val home = homeAddress.value
         if (!home.isConfigured) { _snackbar.value = "Primero configura tu dirección de casa"; return }
-        val loc = (_locationState.value as? LocationState.Available)?.latLng
+        val loc = (_locationState.value as? LocationState.Available)?.geoPoint
             ?: run { _snackbar.value = "Obteniendo tu ubicación…"; fetchCurrentLocation(); return }
         viewModelScope.launch {
             _routeState.value = RouteState.Loading
-            routeRepo.getRoute(loc, home.latLng)
+            routeRepo.getRoute(loc, home.geoPoint)
                 .onSuccess { _routeState.value = RouteState.Success(it) }
                 .onFailure { _routeState.value = RouteState.Error(it.message ?: "Error"); _snackbar.value = it.message }
         }

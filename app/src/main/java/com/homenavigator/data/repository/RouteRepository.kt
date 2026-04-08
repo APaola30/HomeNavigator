@@ -1,10 +1,10 @@
 package com.homenavigator.data.repository
 
-import com.google.android.gms.maps.model.LatLng
 import com.homenavigator.BuildConfig
 import com.homenavigator.data.model.NavigationStep
 import com.homenavigator.data.model.OrsDirectionsRequest
 import com.homenavigator.data.model.RouteInfo
+import org.osmdroid.util.GeoPoint
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 class RouteRepository @Inject constructor(
     private val orsApiService: OrsApiService
 ) {
-    suspend fun getRoute(origin: LatLng, destination: LatLng): Result<RouteInfo> {
+    suspend fun getRoute(origin: GeoPoint, destination: GeoPoint): Result<RouteInfo> {
         return try {
             val request = OrsDirectionsRequest(
                 coordinates = listOf(

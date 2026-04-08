@@ -1,6 +1,6 @@
 package com.homenavigator.data.model
 
-import com.google.android.gms.maps.model.LatLng
+import org.osmdroid.util.GeoPoint
 
 data class HomeAddress(
     val displayName: String = "",
@@ -8,7 +8,7 @@ data class HomeAddress(
     val longitude: Double = 0.0,
     val isConfigured: Boolean = false
 ) {
-    val latLng: LatLng get() = LatLng(latitude, longitude)
+    val geoPoint: GeoPoint get() = GeoPoint(latitude, longitude)
 }
 
 data class OrsDirectionsRequest(
@@ -67,7 +67,7 @@ data class RouteInfo(
     val distanceKm: Double,
     val durationMinutes: Double,
     val steps: List<NavigationStep>,
-    val polylinePoints: List<LatLng>
+    val polylinePoints: List<GeoPoint>          // ← GeoPoint de osmdroid
 )
 
 data class NavigationStep(
@@ -87,6 +87,6 @@ sealed class RouteState {
 sealed class LocationState {
     data object Idle : LocationState()
     data object Loading : LocationState()
-    data class Available(val latLng: LatLng) : LocationState()
+    data class Available(val geoPoint: GeoPoint) : LocationState() // ← GeoPoint
     data class Error(val message: String) : LocationState()
 }

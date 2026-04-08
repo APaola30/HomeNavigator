@@ -1,10 +1,10 @@
 package com.homenavigator.data.repository
 
-import com.google.android.gms.maps.model.LatLng
+import org.osmdroid.util.GeoPoint
 
 object PolylineDecoder {
-    fun decode(encoded: String, precision: Int = 5): List<LatLng> {
-        val poly = mutableListOf<LatLng>()
+    fun decode(encoded: String, precision: Int = 5): List<GeoPoint> {
+        val poly = mutableListOf<GeoPoint>()
         var index = 0
         val len = encoded.length
         var lat = 0
@@ -18,7 +18,7 @@ object PolylineDecoder {
             shift = 0; result = 0
             do { b = encoded[index++].code - 63; result = result or (b and 0x1f shl shift); shift += 5 } while (b >= 0x20)
             lng += if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            poly.add(LatLng(lat / factor, lng / factor))
+            poly.add(GeoPoint(lat / factor, lng / factor))
         }
         return poly
     }
